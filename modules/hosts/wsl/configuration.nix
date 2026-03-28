@@ -1,67 +1,46 @@
-{ self, inputs, ... }:
-
 {
-  flake.nixosModules.wslConfiguration = { pkgs, lib, ... }: {
-    # import modules from here
-    imports = [
-      self.nixosModules.joao
-    ];
+  inputs,
+  self,
+  ...
+}:
+{
+  flake.nixosModules.wsl =
+    { pkgs, lib, ... }:
+    {
+      imports = [
+        inputs.nixos-wsl.nixosModules.default
+        inputs.agenix.nixosModules.default
 
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-    environment.systemPackages = with pkgs; [
-      aspell
-      curl
-      croc
-      devenv
-      dig
-      exiftool
-      fastfetch
-      fd
-      file
-      ffmpeg
-      graphviz
-      htop
-      jq
-      lsof
-      pinentry-gtk2
-      pciutils
-      psmisc
-      ripgrep
-      sshfs
-      tree
-      tree-sitter
-      unar
-      unzip
-      usbutils
-      wget
-      zip
-    ];
-
-    environment.variables = {
-      EDITOR = "doom emacs";
-      SUDO_EDITOR = "emacs";
-    };
-
-    virtualisation.containers.enable = true;
-
-
-    virtualisation.containers.policy = {
-      default = [
         {
-          type = "insecureAcceptAnything";
+          fonts.packages = with pkgs; [
+            font-awesome_5
+            iosevka
+            nerd-fonts.iosevka
+            powerline-fonts
+          ];
         }
       ];
-    };
 
-    wsl = {
-      enable = true;
-      defaultUser = "joao";
-      startMenuLaunchers = true;
-      usbip.enable = true;
-      useWindowsDriver = true;
-    };
+      age.identityPaths = [
+        (self + /secrets/ssh-key.pub)
+      ];
 
-    system.stateVersion = "25.11";
-  };
+      age.secrets.gpg = {
+        file = self + /secrets/gpg.age;
+        path = "/home/joao/.gnupg";
+      };
+
+      nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+      nix.settings.experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+
+      wsl = {
+        enable = true;
+        defaultUser = "joao";
+      };
+
+      system.stateVersion = "25.11";
+    };
 }
