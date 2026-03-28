@@ -15,11 +15,6 @@
             maxCacheTtlSsh = 34560000;
             pinentry.package = pkgs.pinentry-gtk2;
           };
-
-          programs.ssh = {
-            enable = true;
-            knownHosts = {};
-          };
         }
       ];
     };

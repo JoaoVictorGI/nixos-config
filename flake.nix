@@ -12,24 +12,23 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    emacs = {
-      url = "github:nix-community/emacs-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+    emacs = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
-      {
-        systems = [ "x86_64-linux" ];
-      }
-      // (inputs.import-tree ./modules)
-    );
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules)
+    // {
+      overlays = {
+        emacs = inputs.emacs.overlay;
+      };
+    };
 }

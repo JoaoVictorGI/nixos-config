@@ -16,6 +16,8 @@
         self.nixosModules.gpg
       ];
 
+      nixpkgs.overlays = [ inputs.emacs.overlay ];
+
       fonts.packages = with pkgs; [
         font-awesome_5
         iosevka
