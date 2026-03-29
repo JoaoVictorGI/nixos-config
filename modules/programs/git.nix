@@ -17,6 +17,7 @@
             user = {
               name = "João Victor";
               email = "joaovictor.gizidoro@gmail.com";
+              signingKey = "C80025CAE987D83C";
             };
 
             alias = {
